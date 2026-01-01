@@ -35,13 +35,13 @@ pipeline {
             steps{
                 script {
                     dir('auth-service') { 
-                        // 1. Build l-image (Hadi rah khedamat lik)
+                        // 1. Build l-image (Hadi khdama 100%)
                         sh "docker build -t ${IMAGE_NAME}:${env.BUILD_NUMBER} ."
                         
-                        // 2. Login u Push b l-tariqa dial 'sh' bach t-fekk mouchkil 'not found'
-                        // 'docker-hub-creds' khass t-koun hiya l-ID dial credentials f Jenkins
+                        // 2. Login u Push b-tariqa compatible m3a ga3 l-versions
                         withCredentials([usernamePassword(credentialsId: 'docker-hub-creds', passwordVariable: 'DOCKER_PASS', usernameVariable: 'DOCKER_USER')]) {
-                            sh "echo \$DOCKER_PASS | docker login -u \$DOCKER_USER --password-stdin"
+                            // Sta3melna -p f blasset --password-stdin
+                            sh "docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}"
                             sh "docker push ${IMAGE_NAME}:${env.BUILD_NUMBER}"
                             sh "docker tag ${IMAGE_NAME}:${env.BUILD_NUMBER} ${IMAGE_NAME}:latest"
                             sh "docker push ${IMAGE_NAME}:latest"
