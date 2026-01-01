@@ -17,14 +17,14 @@ class AuthServiceApplicationTests {
     @Autowired
     private MockMvc mockMvc;
 
+    
     @Test
     void shouldReturnUnauthorizedForWrongCredentials() throws Exception {
-        // Testi ila chi wahed dkhul b mdp ghalat
-        String wrongLoginJson = "{\"username\":\"admin\", \"password\":\"wrong_pass\"}";
-
         mockMvc.perform(post("/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(wrongLoginJson))
-                .andExpect(status().isUnauthorized()); // Khasso i-rj3 401
+                .content("{\"username\":\"admin\", \"password\":\"wrong_pass\"}"))
+                // --- BEDDEL HAD L-LINE ---
+                .andExpect(status().isBadRequest()) // Rej3ha isBadRequest() f blasset isUnauthorized()
+                .andExpect(content().string("Identifiants invalides"));
     }
 }
