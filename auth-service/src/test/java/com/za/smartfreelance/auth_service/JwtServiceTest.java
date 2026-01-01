@@ -5,7 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import com.za.smartfreelance.auth_service.service.JwtService;
+import com.za.smartfreelance.auth_service.service.AuthService;
 
 
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class JwtServiceTest {
 
-    private JwtService jwtService;
+    private AuthService jwtService;
     private UserDetails userDetails;
 
     @BeforeEach
