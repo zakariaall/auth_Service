@@ -20,7 +20,7 @@ class JwtServiceTest {
     void setUp() {
         jwtUtil = new JwtUtil();
         // Farsi l-valeurs dial @Value bach may-tla3sh lik NullPointerException
-        ReflectionTestUtils.setField(jwtUtil, "jwtSecret", "Zm9sbG93LW1lLW9uLWdpdGh1Yi16YWthcmlhLWFsbGFmb3Utc21hcnQtZnJlZWxhbmNlLXByb2plY3Q=");
+        ReflectionTestUtils.setField(jwtUtil, "jwtSecret", "dGhpcy1pcy1hLXZlcnktbG9uZy1zZWNyZXQta2V5LWZvci1ocy01MTItYWxnb3JpdGhtLWl0LW11c3QtYmUtNjQtY2hhcmFjdGVycw==");
         ReflectionTestUtils.setField(jwtUtil, "jwtExpirationMs", 3600000);
 
         userDetails = new User("zakaria_freelancer", "password123", new ArrayList<>());
