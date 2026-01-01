@@ -34,11 +34,17 @@ pipeline {
         stage('Docker Build & Push'){
             steps{
                 script {
-                    dir('auth-service'){
-                        def appImage = docker.build("${IMAGE_NAME}:${env.BUILD_NUMBER}")
-                        docker.withRegistry('', "${DOKCKER_CREDS}") {
-                            appImage.push()
-                            appImage.push('latest')
+                    dir('auth-service') { 
+                        // 1. Build l-image (Hadi rah khedamat lik)
+                        sh "docker build -t ${IMAGE_NAME}:${env.BUILD_NUMBER} ."
+                        
+                        // 2. Login u Push b l-tariqa dial 'sh' bach t-fekk mouchkil 'not found'
+                        // 'docker-hub-creds' khass t-koun hiya l-ID dial credentials f Jenkins
+                        withCredentials([usernamePassword(credentialsId: 'docker-hub-creds', passwordVariable: 'DOCKER_PASS', usernameVariable: 'DOCKER_USER')]) {
+                            sh "echo \$DOCKER_PASS | docker login -u \$DOCKER_USER --password-stdin"
+                            sh "docker push ${IMAGE_NAME}:${env.BUILD_NUMBER}"
+                            sh "docker tag ${IMAGE_NAME}:${env.BUILD_NUMBER} ${IMAGE_NAME}:latest"
+                            sh "docker push ${IMAGE_NAME}:latest"
                         }
                     }
                 }
@@ -46,6 +52,7 @@ pipeline {
         }
         stage('Deploy'){
             steps {
+                // N-weqfo u n-msḥo l-container l-qdim (ila kan) u n-lanciwo jdid
                 sh "docker stop auth-service || true && docker rm auth-service || true"
                 sh "docker run -d -p 8082:8082 --name auth-service ${IMAGE_NAME}:${env.BUILD_NUMBER}"
             }
