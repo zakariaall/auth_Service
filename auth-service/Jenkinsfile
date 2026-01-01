@@ -1,0 +1,53 @@
+
+pipeline {
+    agent any
+    environment {
+        IMAGE_NAME = 'zakariaallafou/auth-service'
+        DOKCKER_CREDS = 'docker-hub-creds'
+    }
+    tools {
+        maven 'M3'
+    }
+
+    stages {
+
+        stage('Checkout Source Code') {
+            steps {
+                checkout scm 
+            }
+        }
+        stage('Build Artifact'){
+            steps {
+                dir('auth-service'){
+                    sh 'mvn clean package -DskipTests'
+                }
+            }
+        }
+        stage('Run Tests'){
+            steps {
+                dir('auth-service'){
+                    sh 'mvn test'
+                }
+            }
+        }
+        stage('Docker Build & Push'){
+            steps{
+                script {
+                    dir('auth-service'){
+                        def appImage = docker.build("${IMAGE_NAME}:${env.BUILD_NUMBER}")
+                        docker.withRegistry('', "${DOKCKER_CREDS}") {
+                            appImage.push()
+                            appImage.push('latest')
+                        }
+                    }
+                }
+            }
+        }
+        stage('Deploy'){
+            steps {
+                sh "docker stop auth-service || true && docker rm auth-service || true"
+                sh "docker run -d -p 8082:8082 --name auth-service ${IMAGE_NAME}:${env.BUILD_NUMBER}"
+            }
+        }
+    }
+}
