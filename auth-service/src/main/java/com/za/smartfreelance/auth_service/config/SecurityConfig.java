@@ -42,6 +42,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
+                .requestMatchers("/actuator/**").permitAll()
                 .requestMatchers("/api/auth/validate").permitAll() // Autorise GET, POST, OPTIONS
                 .requestMatchers(HttpMethod.POST, "/api/auth/create-freelance-profile").authenticated()
                 .requestMatchers(HttpMethod.POST, "/api/auth/create-visitor-profile").authenticated()
