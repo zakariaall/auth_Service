@@ -1,12 +1,11 @@
 package com.za.smartfreelance.auth_service;
 
-import io.jsonwebtoken.Claims;
+import com.za.smartfreelance.auth_service.security.JwtUtil; // 1. Import JwtUtil d-sa7
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import com.za.smartfreelance.auth_service.service.AuthService;
-
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.ArrayList;
 
@@ -14,29 +13,33 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class JwtServiceTest {
 
-    private AuthService jwtService;
+    private JwtUtil jwtUtil; // 2. Khdem b JwtUtil
     private UserDetails userDetails;
 
     @BeforeEach
     void setUp() {
-        // Initialsation dial l-service m3a chi Secret Key dyal l-test
-        jwtService = new JwtService(); 
+        jwtUtil = new JwtUtil();
+        // Farsi l-valeurs dial @Value bach may-tla3sh lik NullPointerException
+        ReflectionTestUtils.setField(jwtUtil, "jwtSecret", "Zm9sbG93LW1lLW9uLWdpdGh1Yi16YWthcmlhLWFsbGFmb3Utc21hcnQtZnJlZWxhbmNlLXByb2plY3Q=");
+        ReflectionTestUtils.setField(jwtUtil, "jwtExpirationMs", 3600000);
+
         userDetails = new User("zakaria_freelancer", "password123", new ArrayList<>());
     }
 
     @Test
     void shouldGenerateValidToken() {
-        // 1. Generation dial token
-        String token = jwtService.generateToken(userDetails);
+        // 3. JwtUtil dialk k-i-akhod String username, machi UserDetails
+        String token = jwtUtil.generateToken(userDetails.getUsername()); 
         
-        // 2. Vérification
         assertNotNull(token);
-        assertEquals("zakaria_freelancer", jwtService.extractUsername(token));
+        // 4. JwtUtil fih getUsernameFromToken() machi extractUsername()
+        assertEquals("zakaria_freelancer", jwtUtil.getUsernameFromToken(token));
     }
 
     @Test
     void shouldValidateTokenCorrectly() {
-        String token = jwtService.generateToken(userDetails);
-        assertTrue(jwtService.isTokenValid(token, userDetails));
+        String token = jwtUtil.generateToken(userDetails.getUsername());
+        // 5. JwtUtil fih validateToken() machi isTokenValid()
+        assertTrue(jwtUtil.validateToken(token));
     }
 }
