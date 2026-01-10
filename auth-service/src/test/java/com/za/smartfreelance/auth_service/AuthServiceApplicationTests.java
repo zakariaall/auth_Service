@@ -24,8 +24,7 @@ class AuthServiceApplicationTests {
         mockMvc.perform(post("/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"username\":\"admin\", \"password\":\"wrong_pass\"}"))
-                // --- BEDDEL HAD L-LINE ---
-                .andExpect(status().isBadRequest()) // Rej3ha isBadRequest() f blasset isUnauthorized()
+                .andExpect(status().isBadRequest()) 
                 .andExpect(content().string("Identifiants invalides"));
     }
 }

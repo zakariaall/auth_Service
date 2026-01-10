@@ -3,7 +3,6 @@ pipeline {
     agent any
     environment {
         IMAGE_NAME = 'zakariaallafou/auth-service'
-        DOKCKER_CREDS = 'docker-hub-creds'
     }
     tools {
         maven 'M3'
@@ -35,12 +34,9 @@ pipeline {
             steps{
                 script {
                     dir('auth-service') { 
-                        // 1. Build l-image (Hadi khdama 100%)
                         sh "docker build -t ${IMAGE_NAME}:${env.BUILD_NUMBER} ."
                         
-                        // 2. Login u Push b-tariqa compatible m3a ga3 l-versions
                         withCredentials([usernamePassword(credentialsId: 'docker-hub-creds', passwordVariable: 'DOCKER_PASS', usernameVariable: 'DOCKER_USER')]) {
-                            // Sta3melna -p f blasset --password-stdin
                             sh "docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}"
                             sh "docker push ${IMAGE_NAME}:${env.BUILD_NUMBER}"
                             sh "docker tag ${IMAGE_NAME}:${env.BUILD_NUMBER} ${IMAGE_NAME}:latest"

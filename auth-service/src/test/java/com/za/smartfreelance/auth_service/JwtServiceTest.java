@@ -28,18 +28,15 @@ class JwtServiceTest {
 
     @Test
     void shouldGenerateValidToken() {
-        // 3. JwtUtil dialk k-i-akhod String username, machi UserDetails
         String token = jwtUtil.generateToken(userDetails.getUsername()); 
         
         assertNotNull(token);
-        // 4. JwtUtil fih getUsernameFromToken() machi extractUsername()
         assertEquals("zakaria_freelancer", jwtUtil.getUsernameFromToken(token));
     }
 
     @Test
     void shouldValidateTokenCorrectly() {
         String token = jwtUtil.generateToken(userDetails.getUsername());
-        // 5. JwtUtil fih validateToken() machi isTokenValid()
         assertTrue(jwtUtil.validateToken(token));
     }
 }
